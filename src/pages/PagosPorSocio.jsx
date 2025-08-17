@@ -3,37 +3,36 @@ import {
   obtenerPagosPorDocumento,
   actualizarPago,
   obtenerResumenPagosPorMes
-} from "../services/PagoService"; 
+} from "../services/PagoService";
 import { obtenerSocios } from "../services/SocioService";
 import {
   obtenerInteresPorIdPago,
   registrarInteresPago
 } from "../services/InteresPagoService";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Container,
-  Row,
-  Col,
-  Table,
-  Alert,
-  Form,
-  Modal
-} from "react-bootstrap";
+import { Container, Alert } from "react-bootstrap";
 
-function PagosPorSocio() {
+import HeaderSection from "./HeaderSection";
+import BuscarPorSocio from "./BuscarPorSocio";
+import BuscarPorMes from "./BuscarPorMes";
+import TablaPagosSocio from "./TablaPagosSocio";
+import TablaPagosMensuales from "./TablaPagosMensuales";
+import EditarPagoModal from "./EditarPagoModal";
+import RegistrarInteresModal from "./RegistrarInteresModal";
+
+export default function PagosPorSocio() {
   const [socios, setSocios] = useState([]);
   const [documento, setDocumento] = useState("");
   const [pagos, setPagos] = useState(null);
 
   const [pagosMensuales, setPagosMensuales] = useState([]);
-  const [totalesMes, setTotalesMes] = useState(null); 
+  const [totalesMes, setTotalesMes] = useState(null);
   const [mesSeleccionado, setMesSeleccionado] = useState(null);
 
   const [error, setError] = useState("");
+  const [mensajeExito, setMensajeExito] = useState("");
+
   const [pagoAEditar, setPagoAEditar] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [mensajeExito, setMensajeExito] = useState("");
 
   const [intereses, setIntereses] = useState({});
   const [mostrarModalInteres, setMostrarModalInteres] = useState(false);
@@ -44,8 +43,6 @@ function PagosPorSocio() {
   });
   const [errorInteres, setErrorInteres] = useState("");
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const cargarSocios = async () => {
       try {
@@ -55,53 +52,51 @@ function PagosPorSocio() {
         console.error("Error al cargar socios:", err);
       }
     };
-
     cargarSocios();
   }, []);
 
   useEffect(() => {
-  if (pagosMensuales.length > 0) {
+    if (pagosMensuales.length === 0) return;
+
     const fetchIntereses = async () => {
       const interesesMap = {};
       let sumaIntereses = 0;
 
       await Promise.all(
         pagosMensuales.map(async (p) => {
-          const interes = await obtenerInteresPorIdPago(p.idPago);
-          if (interes && interes.length > 0) {
-            interesesMap[p.idPago] = interes[0];
-            sumaIntereses += interes[0].valorTotal; 
+          try {
+            const interes = await obtenerInteresPorIdPago(p.idPago);
+            if (interes && interes.length > 0) {
+              interesesMap[p.idPago] = interes[0];
+              sumaIntereses += Number(interes[0].valorTotal) || 0;
+            }
+          } catch {
           }
         })
       );
 
       setIntereses(interesesMap);
       setTotalesMes((prev) => ({
-        ...prev,
+        ...(prev || { ahorro: 0, polla: 0, rifa: 0 }),
         interes: sumaIntereses
       }));
     };
 
     fetchIntereses();
-  }
-}, [pagosMensuales]);
-
-
-
+  }, [pagosMensuales]);
 
   const buscarPagos = async () => {
     if (!documento) {
       setError("Debe seleccionar un socio.");
       return;
     }
-
     try {
       const data = await obtenerPagosPorDocumento(documento);
       setPagos(data);
       setPagosMensuales([]);
       setTotalesMes(null);
       setError("");
-    } catch (err) {
+    } catch {
       setPagos(null);
       setError("No se encontraron pagos para el documento.");
     }
@@ -113,9 +108,10 @@ function PagosPorSocio() {
     setPagos(null);
     setDocumento("");
     setError("");
+    setMensajeExito("");
 
     try {
-      const resumen = await obtenerResumenPagosPorMes(mes, anio); 
+      const resumen = await obtenerResumenPagosPorMes(mes, anio);
       setPagosMensuales(resumen.socios || []);
       setTotalesMes({
         ahorro: resumen.totalAhorro,
@@ -134,12 +130,14 @@ function PagosPorSocio() {
       ahorro: pago.ahorro,
       polla: pago.polla,
       rifa: pago.rifa,
-      fechaPago: pago.fechaPago.split("T")[0]
+      fechaPago: (pago.fechaPago || "").split("T")[0]
     });
     setMostrarModal(true);
   };
 
   const guardarCambios = async () => {
+    if (!pagoAEditar) return;
+
     const dto = {
       idPago: pagoAEditar.id,
       ahorro: parseFloat(pagoAEditar.ahorro),
@@ -150,11 +148,15 @@ function PagosPorSocio() {
 
     try {
       const mensaje = await actualizarPago(dto);
-      setMensajeExito(mensaje);
+      setMensajeExito(mensaje || "Pago actualizado correctamente.");
       setMostrarModal(false);
-      await buscarPagosDelMes(mesSeleccionado);
+      if (mesSeleccionado) {
+        await buscarPagosDelMes(mesSeleccionado);
+      } else if (documento) {
+        await buscarPagos();
+      }
     } catch (err) {
-      setError(err.message);
+      setError(err?.message || "Error al actualizar el pago.");
     }
   };
 
@@ -219,7 +221,7 @@ function PagosPorSocio() {
 
       if (mesSeleccionado) {
         await buscarPagosDelMes(mesSeleccionado);
-      } else if (pagos) {
+      } else if (documento) {
         await buscarPagos();
       }
     } catch (err) {
@@ -230,277 +232,52 @@ function PagosPorSocio() {
 
   return (
     <Container className="mt-5">
-      <Row className="mb-4 align-items-center">
-        <Col xs="auto">
-          <Link to="/">
-            <Button variant="outline-dark">← Regresar</Button>
-          </Link>
-        </Col>
-        <Col>
-          <h2 className="mb-0 text-center text-md-start">
-            Consultar Pagos por Socio
-          </h2>
-        </Col>
-        <Col className="text-end">
-          <Button
-            variant="success"
-            onClick={() => navigate("/ahorros/registrar")}
-          >
-            + Registrar Pago
-          </Button>
-        </Col>
-      </Row>
+      <HeaderSection />
 
-      <Form className="d-flex mb-3">
-        <Form.Select
-          className="me-2"
-          value={documento}
-          onChange={(e) => setDocumento(e.target.value)}
-        >
-          <option value="">Seleccione un socio</option>
-          {socios.map((s) => (
-            <option key={s.documento} value={s.documento}>
-              {s.nombre} - {s.documento}
-            </option>
-          ))}
-        </Form.Select>
-        <Button variant="primary" onClick={buscarPagos}>
-          Buscar
-        </Button>
-      </Form>
+      <BuscarPorSocio
+        socios={socios}
+        documento={documento}
+        setDocumento={setDocumento}
+        onBuscar={buscarPagos}
+      />
 
-      <Row className="mb-3 justify-content-center">
-        {[...Array(12)].map((_, i) => (
-          <Col xs="auto" key={i}>
-            <Button
-              variant={mesSeleccionado === i + 1 ? "dark" : "outline-dark"}
-              onClick={() => buscarPagosDelMes(i + 1)}
-            >
-              {new Date(0, i).toLocaleString("es", { month: "long" }).toUpperCase()}
-            </Button>
-          </Col>
-        ))}
-      </Row>
+      <BuscarPorMes
+        mesSeleccionado={mesSeleccionado}
+        onBuscarMes={buscarPagosDelMes}
+      />
 
-      {error && <Alert variant="danger">{error}</Alert>}
-      {mensajeExito && <Alert variant="success">{mensajeExito}</Alert>}
+      {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+      {mensajeExito && <Alert variant="success" className="mt-3">{mensajeExito}</Alert>}
 
-      {pagos && (
-        <div>
-          <h5>Socio: {pagos.nombre}</h5>
-          <p>
-            <strong>Documento:</strong> {pagos.documento}
-          </p>
-          <Table bordered hover className="text-center align-middle mt-3">
-            <thead className="table-dark">
-              <tr>
-                <th>Fecha de Pago</th>
-                <th>Ahorro</th>
-                <th>Polla</th>
-                <th>Rifa</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pagos.pagos.map((p, i) => (
-                <tr key={i}>
-                  <td>{p.fechaPago}</td>
-                  <td>${p.ahorro.toFixed(2)}</td>
-                  <td>${p.polla.toFixed(2)}</td>
-                  <td>${p.rifa.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot className="table-secondary">
-              <tr>
-                <th>Totales:</th>
-                <th>${pagos.totalAhorro.toFixed(2)}</th>
-                <th>${pagos.totalPolla.toFixed(2)}</th>
-                <th>${pagos.totalRifa.toFixed(2)}</th>
-              </tr>
-            </tfoot>
-          </Table>
-        </div>
-      )}
+      {pagos && <TablaPagosSocio pagos={pagos} />}
 
       {pagosMensuales.length > 0 && (
-        <div className="mt-4">
-          <h4 className="text-center mb-3">
-            Pagos del mes de{" "}
-            {new Date(0, mesSeleccionado - 1).toLocaleString("es", {
-              month: "long"
-            }).toUpperCase()}
-          </h4>
-
-          <Table bordered hover className="text-center align-middle">
-            <thead className="table-dark">
-              <tr>
-                <th>Socio</th>
-                <th>Documento</th>
-                <th>Ahorro</th>
-                <th>Polla</th>
-                <th>Rifa</th>
-                <th>Interés</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pagosMensuales.map((p, i) => (
-                <tr key={i}>
-                  <td>{p.nombre}</td>
-                  <td>{p.documento}</td>
-                  <td>${p.ahorro.toFixed(2)}</td>
-                  <td>${p.polla.toFixed(2)}</td>
-                  <td>${p.rifa.toFixed(2)}</td>
-                  <td>
-                    {intereses[p.idPago]
-                      ? `$${intereses[p.idPago].valorTotal.toFixed(2)}`
-                      : "$0.00"}
-                  </td>
-
-
-                  <td>{p.fechaPago?.split("T")[0] ?? ""}</td>
-                  <td>
-                    <Button
-                      variant="warning"
-                      size="sm"
-                      onClick={() => iniciarEdicion(p)}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      variant="info"
-                      size="sm"
-                      className="ms-2"
-                      onClick={() => abrirModalInteres(p)}
-                    >
-                      Intereses
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot className="table-secondary">
-              <tr>
-                <th colSpan={2}>Totales:</th>
-                <th>${totalesMes?.ahorro.toFixed(2) || "0.00"}</th>
-                <th>${totalesMes?.polla.toFixed(2) || "0.00"}</th>
-                <th>${totalesMes?.rifa.toFixed(2) || "0.00"}</th>
-                <th>${totalesMes?.interes?.toFixed(2) || "0.00"}</th>
-                <th colSpan={2}></th>
-              </tr>
-            </tfoot>
-          </Table>
-        </div>
+        <TablaPagosMensuales
+          mesSeleccionado={mesSeleccionado}
+          pagosMensuales={pagosMensuales}
+          intereses={intereses}
+          totalesMes={totalesMes}
+          iniciarEdicion={iniciarEdicion}
+          abrirModalInteres={abrirModalInteres}
+        />
       )}
 
-      <Modal show={mostrarModal} onHide={() => setMostrarModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Editar Pago</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {pagoAEditar && (
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Ahorro</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={pagoAEditar.ahorro}
-                  onChange={(e) =>
-                    setPagoAEditar({ ...pagoAEditar, ahorro: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Polla</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={pagoAEditar.polla}
-                  onChange={(e) =>
-                    setPagoAEditar({ ...pagoAEditar, polla: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Rifa</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={pagoAEditar.rifa}
-                  onChange={(e) =>
-                    setPagoAEditar({ ...pagoAEditar, rifa: e.target.value })
-                  }
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Fecha de Pago</Form.Label>
-                <Form.Control
-                  type="date"
-                  value={pagoAEditar.fechaPago}
-                  onChange={(e) =>
-                    setPagoAEditar({
-                      ...pagoAEditar,
-                      fechaPago: e.target.value
-                    })
-                  }
-                />
-              </Form.Group>
-            </Form>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setMostrarModal(false)}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={guardarCambios}>
-            Guardar Cambios
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <EditarPagoModal
+        show={mostrarModal}
+        pagoAEditar={pagoAEditar}
+        setPagoAEditar={setPagoAEditar}
+        onHide={() => setMostrarModal(false)}
+        onGuardar={guardarCambios} 
+      />
 
-      <Modal show={mostrarModalInteres} onHide={cerrarModalInteres}>
-        <Modal.Header closeButton>
-          <Modal.Title>Registrar Interés</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {errorInteres && <Alert variant="danger">{errorInteres}</Alert>}
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Días</Form.Label>
-              <Form.Control
-                type="number"
-                name="dias"
-                value={interesForm.dias}
-                onChange={handleChangeInteres}
-                placeholder="Número de días"
-                min={1}
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Valor Total Calculado</Form.Label>
-              <Form.Control
-                type="text"
-                value={interesForm.valorTotal ? `$${interesForm.valorTotal}` : ""}
-                readOnly
-              />
-            </Form.Group>
-
-            <Form.Text className="text-muted">
-              Pago: {interesForm.idPago ?? "—"}
-            </Form.Text>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={cerrarModalInteres}>
-            Cancelar
-          </Button>
-          <Button variant="success" onClick={guardarInteres}>
-            Registrar Interés
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <RegistrarInteresModal
+        show={mostrarModalInteres}
+        interesForm={interesForm}
+        errorInteres={errorInteres}
+        onChange={handleChangeInteres}
+        onGuardar={guardarInteres}
+        onHide={cerrarModalInteres}
+      />
     </Container>
   );
 }
-
-export default PagosPorSocio;
