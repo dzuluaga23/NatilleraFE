@@ -12,7 +12,6 @@ export async function obtenerSocioXDocumento(documento) {
   return await response.json();
 }
 
-// src/services/socioService.js
 export async function obtenerSociosActivos() {
   const response = await fetch("http://localhost:5164/api/Socios/ConsultarTodos");
   if (!response.ok) throw new Error("No se pudieron obtener los socios.");
@@ -38,14 +37,6 @@ export async function eliminarSocioPorDocumento(documento) {
   return data;
 }
 
-const API_ROLES = 'http://localhost:5164/api/Roles';
-
-export async function obtenerRoles() {
-  const response = await fetch(`${API_ROLES}/ConsultarTodos`);
-  if (!response.ok) throw new Error('Error al obtener roles');
-  return await response.json();
-}
-
 export async function obtenerNumerosDisponibles() {
   const response = await fetch(`${API_URL}/NumerosDisponibles`);
   if (!response.ok) throw new Error('Error al obtener los números disponibles');
@@ -65,4 +56,12 @@ export async function activarSocioPorDocumento(documento) {
 
   const data = await response.text();
   return data;
+}
+
+const API_ROLES = 'http://localhost:5164/api/Roles';
+
+export async function obtenerRoles() {
+  const response = await fetch(`${API_ROLES}/ConsultarTodos`);
+  if (!response.ok) throw new Error('Error al obtener roles');
+  return await response.json();
 }

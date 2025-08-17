@@ -27,6 +27,12 @@ function App() {
         </div>
 
         <div className="col-12 col-md-6">
+          <Link to="/polla" className="btn btn-info btn-lg w-100 shadow rounded-pill fw-bold">
+            🏦 POLLA
+          </Link>
+        </div>
+
+        <div className="col-12 col-md-6">
           <Link to="/banco" className="btn btn-primary btn-lg w-100 shadow rounded-pill fw-bold">
             🏦 BANCO
           </Link>

@@ -50,3 +50,9 @@ export async function obtenerPagosPorDocumento(documento) {
   if (!response.ok) throw new Error("No se pudieron obtener los pagos.");
   return await response.json();
 }
+
+export const obtenerResumenPagosPorMes = async (mes, anio) => {
+  const res = await fetch(`${API_URL}/PorMes?mes=${mes}&anio=${anio}`);
+  if (!res.ok) throw new Error("Error al obtener el resumen de pagos.");
+  return res.json();
+};
