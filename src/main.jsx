@@ -7,8 +7,8 @@ import AgregarSocio from './pages/AgregarSocio';
 import SociosInactivos from './pages/SociosInactivos';
 import RegistrarPago from './pages/RegistrarPago';
 import PagosPorSocio from './pages/PagosPorSocio';
-import RegistroGanadorPolla from './pages/RegistroGanadorPolla';
 import Polla from './pages/Polla';
+import Prestamos from './pages/Prestamos';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -20,6 +20,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/ahorros" element={<PagosPorSocio />} />
       <Route path="/ahorros/registrar" element={<RegistrarPago />} />
       <Route path="/polla" element={<Polla />} />
+      <Route path="/prestamos" element={<Prestamos />} />
+
     </Routes>
   </BrowserRouter>
 );
