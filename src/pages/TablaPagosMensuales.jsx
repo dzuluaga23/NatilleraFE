@@ -36,12 +36,12 @@ export default function TablaPagosMensuales({
             <tr key={i}>
               <td>{p.nombre}</td>
               <td>{p.documento}</td>
-              <td>${Number(p.ahorro).toFixed(2)}</td>
-              <td>${Number(p.polla).toFixed(2)}</td>
-              <td>${Number(p.rifa).toFixed(2)}</td>
+              <td>${Number(p.ahorro).toLocaleString()}</td>
+              <td>${Number(p.polla).toLocaleString()}</td>
+              <td>${Number(p.rifa).toLocaleString()}</td>
               <td>
                 {intereses[p.idPago]
-                  ? `$${Number(intereses[p.idPago].valorTotal).toFixed(2)}`
+                  ? `$${Number(intereses[p.idPago].valorTotal)}`
                   : "$0.00"}
               </td>
               <td>{p.fechaPago?.split("T")[0] ?? ""}</td>
@@ -65,10 +65,10 @@ export default function TablaPagosMensuales({
         <tfoot className="table-secondary">
           <tr>
             <th colSpan={2}>Totales:</th>
-            <th>${totalesMes?.ahorro?.toFixed(2) || "0.00"}</th>
-            <th>${totalesMes?.polla?.toFixed(2) || "0.00"}</th>
-            <th>${totalesMes?.rifa?.toFixed(2) || "0.00"}</th>
-            <th>${totalesMes?.interes?.toFixed(2) || "0.00"}</th>
+            <th>${totalesMes?.ahorro?.toLocaleString() || "0.00"}</th>
+            <th>${totalesMes?.polla?.toLocaleString() || "0.00"}</th>
+            <th>${totalesMes?.rifa?.toLocaleString() || "0.00"}</th>
+            <th>${totalesMes?.interes?.toLocaleString() || "0.00"}</th>
             <th colSpan={2}></th>
           </tr>
         </tfoot>

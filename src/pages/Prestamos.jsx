@@ -12,7 +12,7 @@ import {
   obtenerInteresesPorPrestamo,
   registrarInteres,
 } from "../services/InteresPrestamoService";
-import { obtenerSocios } from "../services/socioService";
+import { obtenerSocios } from "../services/SocioService";
 import { Link } from "react-router-dom";
 import { Button, Modal } from "react-bootstrap";
 
@@ -179,7 +179,6 @@ function Prestamos() {
         <div style={{ width: "100px" }}></div>
       </div>
 
-      {/* Registrar Préstamo */}
       <div className="card p-3 mb-4">
         <h4>Registrar Préstamo</h4>
         <form onSubmit={handleRegistrar}>
@@ -268,12 +267,12 @@ function Prestamos() {
                 <tr key={p.id}>
                   <td>{p.id}</td>
                   <td>{p.nombreSocio}</td>
-                  <td>{p.valor}</td>
+                  <td>${p.valor.toLocaleString()}</td>
                   <td>{p.fecha}</td>
                   <td>{p.fechaCorte}</td>
-                  <td>{p.totalIntereses}</td>
-                  <td>{p.totalAbonos}</td>
-                  <td>{p.saldoPendiente}</td>
+                  <td>${p.totalIntereses.toLocaleString()}</td>
+                  <td>${p.totalAbonos.toLocaleString()}</td>
+                  <td>${p.saldoPendiente.toLocaleString()}</td>
                   <td>
                     <button
                       className="btn btn-primary btn-sm me-2"
@@ -303,7 +302,7 @@ function Prestamos() {
           {prestamoSeleccionado && (
             <>
               <p><b>Socio:</b> {prestamoSeleccionado.nombreSocio}</p>
-              <p><b>Saldo Pendiente:</b> {prestamoSeleccionado.saldoPendiente}</p>
+              <p><b>Saldo Pendiente:</b> ${prestamoSeleccionado.saldoPendiente.toLocaleString()}</p>
 
               <form onSubmit={handleRegistrarAbono} className="mb-3">
                 <div className="d-flex mb-2">
@@ -344,8 +343,8 @@ function Prestamos() {
                     <tr key={a.id}>
                       <td>{a.id}</td>
                       <td>{a.fecha}</td>
-                      <td>{a.valor}</td>
-                      <td>{a.valorRestante}</td>
+                      <td>${a.valor.toLocaleString()}</td>
+                      <td>${a.valorRestante.toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -363,7 +362,7 @@ function Prestamos() {
           {prestamoSeleccionado && (
             <>
               <p><b>Socio:</b> {prestamoSeleccionado.nombreSocio}</p>
-              <p><b>Saldo Pendiente:</b> {prestamoSeleccionado.saldoPendiente}</p>
+              <p><b>Saldo Pendiente:</b> {prestamoSeleccionado.saldoPendiente.toLocaleString()}</p>
 
               <form onSubmit={handleRegistrarInteres} className="mb-3">
                 <div className="d-flex mb-2">
@@ -403,7 +402,7 @@ function Prestamos() {
                     <tr key={i.id}>
                       <td>{i.id}</td>
                       <td>{i.fecha}</td>
-                      <td>{i.valor}</td>
+                      <td>${i.valor.toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>

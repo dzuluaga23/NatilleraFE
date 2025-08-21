@@ -166,74 +166,78 @@ const BancoDashboard = () => {
                         </div>
                     )}
 
-                    {banco && (
-                        <div className="card shadow-sm mb-4">
-                            <div className="card-header bg-warning fw-bold">
-                                💵 Estado del Banco
-                            </div>
-                            <div className="card-body">
-                                <table className="table table-bordered text-center mb-4">
-                                    <thead className="table-light">
-                                        <tr>
-                                            <th>Efectivo</th>
-                                            <th>Cuenta</th>
-                                            <th>Otro</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>${banco.efectivo?.toLocaleString()}</td>
-                                            <td>${banco.cuenta?.toLocaleString()}</td>
-                                            <td>${banco.ahorro?.toLocaleString()}</td>
-                                            <td className="fw-bold">${banco.total?.toLocaleString()}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                                <h6 className="fw-bold mb-3">✏️ Actualizar montos</h6>
-                                <div className="row g-3">
-                                    <div className="col-md-4">
-                                        <label className="form-label">Efectivo</label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={formBanco.efectivo}
-                                            onChange={(e) => setFormBanco({ ...formBanco, efectivo: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <label className="form-label">Cuenta</label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={formBanco.cuenta}
-                                            onChange={(e) => setFormBanco({ ...formBanco, cuenta: e.target.value })}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <label className="form-label">Otro</label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={formBanco.ahorro}
-                                            onChange={(e) => setFormBanco({ ...formBanco, ahorro: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-                                {mensajeBanco && (
-                                    <div className={`alert alert-${mensajeBanco.tipo} text-center mt-3 mb-0`} role="alert">
-                                        {mensajeBanco.texto}
-                                    </div>
-                                )}
-
-
-                                <button className="btn btn-success mt-4 w-100 fw-bold" onClick={handleUpdateBanco}>
-                                    Actualizar Banco
-                                </button>
-                            </div>
+                    <div className="card shadow-sm mb-4">
+                        <div className="card-header bg-warning fw-bold">
+                            💵 Estado del Banco
                         </div>
-                    )}
+                        <div className="card-body">
+                            <table className="table table-bordered text-center mb-4">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Efectivo</th>
+                                        <th>Cuenta</th>
+                                        <th>Otro</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${Number(banco?.efectivo || 0).toLocaleString()}</td>
+                                        <td>${Number(banco?.cuenta || 0).toLocaleString()}</td>
+                                        <td>${Number(banco?.ahorro || 0).toLocaleString()}</td>
+                                        <td className="fw-bold">
+                                            ${(
+                                                Number(banco?.efectivo || 0) +
+                                                Number(banco?.cuenta || 0) +
+                                                Number(banco?.ahorro || 0)
+                                            ).toLocaleString()}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h6 className="fw-bold mb-3">✏️ Actualizar montos</h6>
+                            <div className="row g-3">
+                                <div className="col-md-4">
+                                    <label className="form-label">Efectivo</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={formBanco.efectivo}
+                                        onChange={(e) => setFormBanco({ ...formBanco, efectivo: e.target.value })}
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <label className="form-label">Cuenta</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={formBanco.cuenta}
+                                        onChange={(e) => setFormBanco({ ...formBanco, cuenta: e.target.value })}
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <label className="form-label">Otro</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={formBanco.ahorro}
+                                        onChange={(e) => setFormBanco({ ...formBanco, ahorro: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            {mensajeBanco && (
+                                <div className={`alert alert-${mensajeBanco.tipo} text-center mt-3 mb-0`} role="alert">
+                                    {mensajeBanco.texto}
+                                </div>
+                            )}
+
+                            <button className="btn btn-success mt-4 w-100 fw-bold" onClick={handleUpdateBanco}>
+                                Actualizar Banco
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="col-md-4">

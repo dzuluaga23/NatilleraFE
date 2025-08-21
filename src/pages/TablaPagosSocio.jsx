@@ -21,18 +21,18 @@ export default function TablaPagosSocio({ pagos }) {
           {pagos.pagos.map((p, i) => (
             <tr key={i}>
               <td>{p.fechaPago}</td>
-              <td>${Number(p.ahorro).toFixed(2)}</td>
-              <td>${Number(p.polla).toFixed(2)}</td>
-              <td>${Number(p.rifa).toFixed(2)}</td>
+              <td>${Number(p.ahorro).toLocaleString()}</td>
+              <td>${Number(p.polla).toLocaleString()}</td>
+              <td>${Number(p.rifa).toLocaleString()}</td>
             </tr>
           ))}
         </tbody>
         <tfoot className="table-secondary">
           <tr>
             <th>Totales:</th>
-            <th>${Number(pagos.totalAhorro).toFixed(2)}</th>
-            <th>${Number(pagos.totalPolla).toFixed(2)}</th>
-            <th>${Number(pagos.totalRifa).toFixed(2)}</th>
+            <th>${Number(pagos.totalAhorro).toLocaleString()}</th>
+            <th>${Number(pagos.totalPolla).toLocaleString()}</th>
+            <th>${Number(pagos.totalRifa).toLocaleString()}</th>
           </tr>
         </tfoot>
       </Table>
