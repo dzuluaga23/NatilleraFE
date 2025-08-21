@@ -24,22 +24,21 @@ function Prestamos() {
   const [idSocio, setIdSocio] = useState("");
   const [idSocioConsulta, setIdSocioConsulta] = useState("");
 
-  const [showModal, setShowModal] = useState(false);
   const [prestamoSeleccionado, setPrestamoSeleccionado] = useState(null);
 
-  // Abonos
   const [abonos, setAbonos] = useState([]);
   const [valorAbono, setValorAbono] = useState("");
   const [fechaAbono, setFechaAbono] = useState("");
   const [errorAbono, setErrorAbono] = useState("");
   const [loadingAbono, setLoadingAbono] = useState(false);
+  const [showModalAbono, setShowModalAbono] = useState(false);
 
-  // Intereses
   const [intereses, setIntereses] = useState([]);
   const [valorInteres, setValorInteres] = useState("");
   const [fechaInteres, setFechaInteres] = useState("");
   const [errorInteres, setErrorInteres] = useState("");
   const [loadingInteres, setLoadingInteres] = useState(false);
+  const [showModalInteres, setShowModalInteres] = useState(false);
 
   useEffect(() => {
     cargarPrestamos();
@@ -90,23 +89,33 @@ function Prestamos() {
     }
   };
 
-  const abrirDetallePrestamo = async (prestamo) => {
+  const abrirModalAbono = async (prestamo) => {
     try {
       setPrestamoSeleccionado(prestamo);
       setErrorAbono("");
-      setErrorInteres("");
       setValorAbono("");
       setFechaAbono("");
-      setValorInteres("");
-      setFechaInteres("");
 
       const dataAbonos = await obtenerAbonosPorPrestamo(prestamo.id);
       setAbonos(dataAbonos);
 
+      setShowModalAbono(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const abrirModalInteres = async (prestamo) => {
+    try {
+      setPrestamoSeleccionado(prestamo);
+      setErrorInteres("");
+      setValorInteres("");
+      setFechaInteres("");
+
       const dataIntereses = await obtenerInteresesPorPrestamo(prestamo.id);
       setIntereses(dataIntereses);
 
-      setShowModal(true);
+      setShowModalInteres(true);
     } catch (error) {
       console.error(error);
     }
@@ -127,7 +136,7 @@ function Prestamos() {
       setValorAbono("");
       setFechaAbono("");
       await cargarPrestamos();
-      setShowModal(false);
+      setShowModalAbono(false);
     } catch (error) {
       console.error(error);
       setErrorAbono(error?.message || "Ocurrió un error al registrar el abono");
@@ -151,21 +160,12 @@ function Prestamos() {
       setValorInteres("");
       setFechaInteres("");
       await cargarPrestamos();
-      setShowModal(false);
+      setShowModalInteres(false);
     } catch (error) {
       console.error(error);
       setErrorInteres(error?.message || "Ocurrió un error al registrar el interés");
     } finally {
       setLoadingInteres(false);
-    }
-  };
-
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    try {
-      return new Date(dateStr).toLocaleDateString();
-    } catch {
-      return dateStr;
     }
   };
 
@@ -225,7 +225,6 @@ function Prestamos() {
         </form>
       </div>
 
-      {/* Consultar Préstamos por Socio */}
       <div className="card p-3 mb-4">
         <h4>Consultar Préstamos por Socio</h4>
         <div className="d-flex">
@@ -247,7 +246,6 @@ function Prestamos() {
         </div>
       </div>
 
-      {/* Listado de Préstamos */}
       <div className="card p-3">
         <h4>Listado de Préstamos</h4>
         <div style={{ maxHeight: "205px", overflowY: "auto" }}>
@@ -278,10 +276,16 @@ function Prestamos() {
                   <td>{p.saldoPendiente}</td>
                   <td>
                     <button
-                      className="btn btn-info btn-sm"
-                      onClick={() => abrirDetallePrestamo(p)}
+                      className="btn btn-primary btn-sm me-2"
+                      onClick={() => abrirModalAbono(p)}
                     >
-                      Ver Detalle
+                      Registrar Abono
+                    </button>
+                    <button
+                      className="btn btn-warning btn-sm"
+                      onClick={() => abrirModalInteres(p)}
+                    >
+                      Registrar Interés
                     </button>
                   </td>
                 </tr>
@@ -291,20 +295,16 @@ function Prestamos() {
         </div>
       </div>
 
-      {/* Modal Detalle */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal show={showModalAbono} onHide={() => setShowModalAbono(false)} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Detalle del Préstamo</Modal.Title>
+          <Modal.Title>Registrar Abono</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {prestamoSeleccionado && (
             <>
               <p><b>Socio:</b> {prestamoSeleccionado.nombreSocio}</p>
-              <p><b>Valor:</b> {prestamoSeleccionado.valor}</p>
               <p><b>Saldo Pendiente:</b> {prestamoSeleccionado.saldoPendiente}</p>
 
-              {/* Registrar Abono */}
-              <h5>Registrar Abono</h5>
               <form onSubmit={handleRegistrarAbono} className="mb-3">
                 <div className="d-flex mb-2">
                   <input
@@ -326,12 +326,9 @@ function Prestamos() {
                     {loadingAbono ? "Procesando..." : "Abonar"}
                   </button>
                 </div>
-                {errorAbono && (
-                  <div className="alert alert-danger mt-2">{errorAbono}</div>
-                )}
+                {errorAbono && <div className="alert alert-danger mt-2">{errorAbono}</div>}
               </form>
 
-              {/* Historial de Abonos */}
               <h5>Historial de Abonos</h5>
               <table className="table table-sm">
                 <thead>
@@ -353,9 +350,21 @@ function Prestamos() {
                   ))}
                 </tbody>
               </table>
+            </>
+          )}
+        </Modal.Body>
+      </Modal>
 
-              {/* Registrar Interés */}
-              <h5 className="mt-4">Registrar Interés</h5>
+      <Modal show={showModalInteres} onHide={() => setShowModalInteres(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Registrar Interés</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {prestamoSeleccionado && (
+            <>
+              <p><b>Socio:</b> {prestamoSeleccionado.nombreSocio}</p>
+              <p><b>Saldo Pendiente:</b> {prestamoSeleccionado.saldoPendiente}</p>
+
               <form onSubmit={handleRegistrarInteres} className="mb-3">
                 <div className="d-flex mb-2">
                   <input
@@ -377,12 +386,9 @@ function Prestamos() {
                     {loadingInteres ? "Procesando..." : "Agregar Interés"}
                   </button>
                 </div>
-                {errorInteres && (
-                  <div className="alert alert-danger mt-2">{errorInteres}</div>
-                )}
+                {errorInteres && <div className="alert alert-danger mt-2">{errorInteres}</div>}
               </form>
 
-              {/* Historial de Intereses */}
               <h5>Historial de Intereses</h5>
               <table className="table table-sm">
                 <thead>

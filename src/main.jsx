@@ -9,6 +9,8 @@ import RegistrarPago from './pages/RegistrarPago';
 import PagosPorSocio from './pages/PagosPorSocio';
 import Polla from './pages/Polla';
 import Prestamos from './pages/Prestamos';
+// import BancoDashboard from './pages/BancoDashboard';
+import BancoProtected from './pages/BancoProtected';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -21,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/ahorros/registrar" element={<RegistrarPago />} />
       <Route path="/polla" element={<Polla />} />
       <Route path="/prestamos" element={<Prestamos />} />
-
+      <Route path="/banco" element={<BancoProtected />} />
     </Routes>
   </BrowserRouter>
 );
