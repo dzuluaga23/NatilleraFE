@@ -1,6 +1,12 @@
 import { Table } from "react-bootstrap";
 
 export default function TablaPagosSocio({ pagos }) {
+  const meses = [
+    "",
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ];
+
   return (
     <div>
       <h5>Socio: {pagos.nombre}</h5>
@@ -12,6 +18,7 @@ export default function TablaPagosSocio({ pagos }) {
         <thead className="table-dark">
           <tr>
             <th>Fecha de Pago</th>
+            <th>Corresponde al mes</th>
             <th>Ahorro</th>
             <th>Polla</th>
             <th>Rifa</th>
@@ -21,6 +28,7 @@ export default function TablaPagosSocio({ pagos }) {
           {pagos.pagos.map((p, i) => (
             <tr key={i}>
               <td>{p.fechaPago}</td>
+              <td>{meses[p.mesPago]}</td>
               <td>${Number(p.ahorro).toLocaleString()}</td>
               <td>${Number(p.polla).toLocaleString()}</td>
               <td>${Number(p.rifa).toLocaleString()}</td>
@@ -30,6 +38,7 @@ export default function TablaPagosSocio({ pagos }) {
         <tfoot className="table-secondary">
           <tr>
             <th>Totales:</th>
+            <th></th>
             <th>${Number(pagos.totalAhorro).toLocaleString()}</th>
             <th>${Number(pagos.totalPolla).toLocaleString()}</th>
             <th>${Number(pagos.totalRifa).toLocaleString()}</th>

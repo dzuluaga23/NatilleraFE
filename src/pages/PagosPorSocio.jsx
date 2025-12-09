@@ -6,7 +6,6 @@ import {
 } from "../services/PagoService";
 import { obtenerSocios } from "../services/SocioService";
 import {
-  obtenerInteresPorIdPago,
   registrarInteresPago
 } from "../services/InteresPagoService";
 import { Container, Alert } from "react-bootstrap";
@@ -34,7 +33,6 @@ export default function PagosPorSocio() {
   const [pagoAEditar, setPagoAEditar] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
 
-  const [intereses, setIntereses] = useState({});
   const [mostrarModalInteres, setMostrarModalInteres] = useState(false);
   const [interesForm, setInteresForm] = useState({
     dias: "",
@@ -54,36 +52,6 @@ export default function PagosPorSocio() {
     };
     cargarSocios();
   }, []);
-
-  useEffect(() => {
-    if (pagosMensuales.length === 0) return;
-
-    const fetchIntereses = async () => {
-      const interesesMap = {};
-      let sumaIntereses = 0;
-
-      await Promise.all(
-        pagosMensuales.map(async (p) => {
-          try {
-            const interes = await obtenerInteresPorIdPago(p.idPago);
-            if (interes && interes.length > 0) {
-              interesesMap[p.idPago] = interes[0];
-              sumaIntereses += Number(interes[0].valorTotal) || 0;
-            }
-          } catch {
-          }
-        })
-      );
-
-      setIntereses(interesesMap);
-      setTotalesMes((prev) => ({
-        ...(prev || { ahorro: 0, polla: 0, rifa: 0 }),
-        interes: sumaIntereses
-      }));
-    };
-
-    fetchIntereses();
-  }, [pagosMensuales]);
 
   const buscarPagos = async () => {
     if (!documento) {
@@ -130,7 +98,8 @@ export default function PagosPorSocio() {
       ahorro: pago.ahorro,
       polla: pago.polla,
       rifa: pago.rifa,
-      fechaPago: (pago.fechaPago || "").split("T")[0]
+      fechaPago: (pago.fechaPago || "").split("T")[0],
+      mesPago: pago.mesPago
     });
     setMostrarModal(true);
   };
@@ -143,7 +112,8 @@ export default function PagosPorSocio() {
       ahorro: parseFloat(pagoAEditar.ahorro),
       polla: parseFloat(pagoAEditar.polla),
       rifa: parseFloat(pagoAEditar.rifa),
-      fechaPago: pagoAEditar.fechaPago
+      fechaPago: pagoAEditar.fechaPago,
+      mesPago: pagoAEditar.mesPago
     };
 
     try {
@@ -255,7 +225,6 @@ export default function PagosPorSocio() {
         <TablaPagosMensuales
           mesSeleccionado={mesSeleccionado}
           pagosMensuales={pagosMensuales}
-          intereses={intereses}
           totalesMes={totalesMes}
           iniciarEdicion={iniciarEdicion}
           abrirModalInteres={abrirModalInteres}
@@ -267,7 +236,7 @@ export default function PagosPorSocio() {
         pagoAEditar={pagoAEditar}
         setPagoAEditar={setPagoAEditar}
         onHide={() => setMostrarModal(false)}
-        onGuardar={guardarCambios} 
+        onGuardar={guardarCambios}
       />
 
       <RegistrarInteresModal

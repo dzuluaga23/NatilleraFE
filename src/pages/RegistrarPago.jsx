@@ -123,6 +123,30 @@ const RegistrarPago = () => {
               required
             />
           </Form.Group>
+          <Form.Group className="mb-4">
+            <Form.Label className="fw-semibold">Corresponde al mes:</Form.Label>
+            <Form.Select
+              name="mesPago"
+              value={formData.mesPago}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Seleccione un mes</option>
+              <option value="1">Enero</option>
+              <option value="2">Febrero</option>
+              <option value="3">Marzo</option>
+              <option value="4">Abril</option>
+              <option value="5">Mayo</option>
+              <option value="6">Junio</option>
+              <option value="7">Julio</option>
+              <option value="8">Agosto</option>
+              <option value="9">Septiembre</option>
+              <option value="10">Octubre</option>
+              <option value="11">Noviembre</option>
+              <option value="12">Diciembre</option>
+            </Form.Select>
+          </Form.Group>
+
 
           <Form.Group className="mb-4">
             <Form.Label className="fw-semibold">Fecha de Pago</Form.Label>
@@ -134,6 +158,7 @@ const RegistrarPago = () => {
               required
             />
           </Form.Group>
+
 
           <div className="text-end">
             <Button variant="success" type="submit">

@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5164/api/Pagos'; 
+const API_URL = 'http://localhost:5164/api/Pagos';
 
 export async function registrarPago(pago) {
   const response = await fetch(`${API_URL}/Registrar`, {
@@ -28,13 +28,13 @@ export const actualizarPago = async (pago) => {
     body: JSON.stringify(pago)
   });
 
-  const data = await res.text(); 
+  const data = await res.text();
 
   if (!res.ok) {
-    throw new Error(data); 
+    throw new Error(data);
   }
 
-  return data; 
+  return data;
 };
 
 
@@ -54,5 +54,10 @@ export async function obtenerPagosPorDocumento(documento) {
 export const obtenerResumenPagosPorMes = async (mes, anio) => {
   const res = await fetch(`${API_URL}/PorMes?mes=${mes}&anio=${anio}`);
   if (!res.ok) throw new Error("Error al obtener el resumen de pagos.");
-  return res.json();
+  const data = await res.json();
+  console.log(data);
+  return data;
+
 };
+
+

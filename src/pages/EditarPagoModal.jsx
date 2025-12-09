@@ -7,6 +7,24 @@ export default function EditarPagoModal({
   setPagoAEditar,
   onGuardar
 }) {
+  const meses = [
+    { numero: 1, nombre: "Enero" },
+    { numero: 2, nombre: "Febrero" },
+    { numero: 3, nombre: "Marzo" },
+    { numero: 4, nombre: "Abril" },
+    { numero: 5, nombre: "Mayo" },
+    { numero: 6, nombre: "Junio" },
+    { numero: 7, nombre: "Julio" },
+    { numero: 8, nombre: "Agosto" },
+    { numero: 9, nombre: "Septiembre" },
+    { numero: 10, nombre: "Octubre" },
+    { numero: 11, nombre: "Noviembre" },
+    { numero: 12, nombre: "Diciembre" }
+  ];
+
+  console.log(pagoAEditar);
+
+
   return (
     <Modal show={show} onHide={onHide} backdrop="static" keyboard={false}>
       <Modal.Header closeButton>
@@ -59,6 +77,27 @@ export default function EditarPagoModal({
                 }
               />
             </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Corresponde al mes:</Form.Label>
+              <Form.Select
+                value={pagoAEditar.mesPago ? String(pagoAEditar.mesPago) : ""}
+                onChange={(e) =>
+                  setPagoAEditar({
+                    ...pagoAEditar,
+                    mesPago: parseInt(e.target.value, 10),
+                  })
+                }
+              >
+                <option value="">Seleccione un mes</option>
+                {meses.map((mes) => (
+                  <option key={mes.numero} value={String(mes.numero)}>
+                    {mes.nombre}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
           </Form>
         )}
       </Modal.Body>

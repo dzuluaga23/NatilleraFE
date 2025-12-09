@@ -3,15 +3,14 @@ import { Table } from "react-bootstrap";
 export default function TablaPagosMensuales({
   mesSeleccionado,
   pagosMensuales,
-  intereses,
   totalesMes,
   iniciarEdicion,
   abrirModalInteres
 }) {
   const nombreMes = mesSeleccionado
     ? new Date(0, mesSeleccionado - 1)
-        .toLocaleString("es", { month: "long" })
-        .toUpperCase()
+      .toLocaleString("es", { month: "long" })
+      .toUpperCase()
     : "";
 
   return (
@@ -39,11 +38,8 @@ export default function TablaPagosMensuales({
               <td>${Number(p.ahorro).toLocaleString()}</td>
               <td>${Number(p.polla).toLocaleString()}</td>
               <td>${Number(p.rifa).toLocaleString()}</td>
-              <td>
-                {intereses[p.idPago]
-                  ? `$${Number(intereses[p.idPago].valorTotal)}`
-                  : "$0.00"}
-              </td>
+              <td>${Number(p.interes || 0).toLocaleString()}</td>
+
               <td>{p.fechaPago?.split("T")[0] ?? ""}</td>
               <td>
                 <button
