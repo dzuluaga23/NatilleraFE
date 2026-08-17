@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5164/api/InteresPrestamo";
+const API_URL = "http://natilleradecember.runasp.net/api/InteresPrestamo";
 
 export const registrarInteres = async (interes) => {
   try {

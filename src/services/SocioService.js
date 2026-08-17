@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5164/api/Socios'; 
+const API_URL = 'http://natilleradecember.runasp.net/api/Socios';
 
 export async function obtenerSocios() {
   const response = await fetch(`${API_URL}/ConsultarTodos`);
@@ -13,7 +13,7 @@ export async function obtenerSocioXDocumento(documento) {
 }
 
 export async function obtenerSociosActivos() {
-  const response = await fetch("http://localhost:5164/api/Socios/ConsultarTodos");
+  const response = await fetch("http://natilleradecember.runasp.net/api/Socios/ConsultarTodos");
   if (!response.ok) throw new Error("No se pudieron obtener los socios.");
   return await response.json();
 }
@@ -25,7 +25,7 @@ export async function crearSocio(socio) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(socio),
   });
-  const data = await response.text(); 
+  const data = await response.text();
   return data;
 }
 
@@ -58,7 +58,7 @@ export async function activarSocioPorDocumento(documento) {
   return data;
 }
 
-const API_ROLES = 'http://localhost:5164/api/Roles';
+const API_ROLES = 'http://natilleradecember.runasp.net/api/Roles';
 
 export async function obtenerRoles() {
   const response = await fetch(`${API_ROLES}/ConsultarTodos`);

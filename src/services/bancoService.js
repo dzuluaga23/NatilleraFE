@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5164/api/Banco";
+const API_URL = "http://natilleradecember.runasp.net/api/Banco";
 
 export const getResumenGeneral = async () => {
   const res = await fetch(`${API_URL}/Resumen`);

@@ -1,10 +1,10 @@
-const API_URL = "http://localhost:5164/api/InteresPago"; 
+const API_URL = "http://natilleradecember.runasp.net/api/InteresPago";
 
 
 export const obtenerInteresPorIdPago = async (idPago) => {
   const response = await fetch(`${API_URL}/ObtenerXId?idPago=${idPago}`);
   if (!response.ok) {
-    return null; 
+    return null;
   }
   return await response.json();
 };

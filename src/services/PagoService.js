@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5164/api/Pagos';
+const API_URL = 'http://natilleradecember.runasp.net/api/Pagos';
 
 export async function registrarPago(pago) {
   const response = await fetch(`${API_URL}/Registrar`, {

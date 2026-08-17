@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5164/api/Abonos";
+const API_URL = "http://natilleradecember.runasp.net/api/Abonos";
 
 export const registrarAbono = async (abono) => {
   const res = await fetch(`${API_URL}/Registrar`, {
