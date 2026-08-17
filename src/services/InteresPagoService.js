@@ -1,4 +1,4 @@
-const API_URL = "http://natilleradecember.runasp.net/api/InteresPago";
+const API_URL = "https://natilleradecember.runasp.net/api/InteresPago";
 
 
 export const obtenerInteresPorIdPago = async (idPago) => {

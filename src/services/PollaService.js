@@ -1,4 +1,4 @@
-const API_BASE = "http://natilleradecember.runasp.net/api/Pollas";
+const API_BASE = "https://natilleradecember.runasp.net/api/Pollas";
 
 export const registrarPolla = async (mes, numero) => {
   const response = await fetch(`${API_BASE}/Registrar`, {

@@ -1,4 +1,4 @@
-const API_URL = 'http://natilleradecember.runasp.net/api/Socios';
+const API_URL = 'https://natilleradecember.runasp.net/api/Socios';
 
 export async function obtenerSocios() {
   const response = await fetch(`${API_URL}/ConsultarTodos`);
@@ -13,7 +13,7 @@ export async function obtenerSocioXDocumento(documento) {
 }
 
 export async function obtenerSociosActivos() {
-  const response = await fetch("http://natilleradecember.runasp.net/api/Socios/ConsultarTodos");
+  const response = await fetch("https://natilleradecember.runasp.net/api/Socios/ConsultarTodos");
   if (!response.ok) throw new Error("No se pudieron obtener los socios.");
   return await response.json();
 }
