@@ -50,31 +50,148 @@
 }
 
 
-.dashboard-title {
-  color: #1976d2;
+/* ===== Página principal (dashboard) ===== */
+.home-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top left, rgba(77, 208, 225, 0.25), transparent 50%),
+    radial-gradient(ellipse at top right, rgba(126, 87, 194, 0.22), transparent 50%),
+    linear-gradient(180deg, #f5f7fb 0%, #e8eef7 100%);
+  padding: 3rem 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
-.dashboard-btn {
+.home-hero {
+  max-width: 720px;
+  margin: 0 auto 2.5rem;
+}
+
+.home-badge {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  background: rgba(25, 118, 210, 0.1);
+  color: #1976d2;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 1rem;
+}
+
+.home-title {
+  font-size: clamp(2.2rem, 6vw, 3.2rem);
+  font-weight: 800;
+  color: #1a237e;
+  margin-bottom: 0.5rem;
+}
+
+.home-year {
+  background: linear-gradient(135deg, #1976d2, #7e57c2);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.home-subtitle {
+  color: #5c6773;
+  font-size: 1.05rem;
+  margin: 0 auto;
+  max-width: 540px;
+}
+
+/* ---- Grid de tarjetas ---- */
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
+  align-content: center;
+}
+
+.home-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.75rem 1.25rem;
+  border-radius: 20px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 18px rgba(16, 42, 84, 0.08);
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: var(--card-gradient);
+}
+
+.home-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(16, 42, 84, 0.16);
+}
+
+.home-card-icon {
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 0.75rem 1rem;
-  border-radius: 50px;
+  font-size: 2rem;
+  border-radius: 18px;
+  background: var(--card-gradient);
   color: white;
-  font-size: 1.1rem;
+  box-shadow: 0 8px 16px rgba(16, 42, 84, 0.18);
+}
+
+.home-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.home-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1a237e;
+  margin: 0;
+}
+
+.home-card-desc {
+  font-size: 0.85rem;
+  color: #6b7684;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.home-card-cta {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  text-decoration: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+  color: #1976d2;
+  transition: transform 0.25s ease;
 }
 
-.dashboard-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-  filter: brightness(1.1);
+.home-card:hover .home-card-cta {
+  transform: translateX(4px);
 }
 
-.dashboard-icon {
-  font-size: 1.5rem;
+.home-footer {
+  text-align: center;
+  color: #8a94a3;
+  font-size: 0.85rem;
+  margin-top: 2.5rem;
 }
